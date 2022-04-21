@@ -1,0 +1,33 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  # JOB 01
+  Deploying_functions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy worker feed to AWS Lambda
+        run: |
+          zip -j workers-feed.zip ./workers/feed/*
+          aws lambda update-function-code --function-name=worker-feed --zip-file=fileb://workers-feed.zip
+
+      - name: Deploy worker-discord to AWS Lambda
+        run: |
+          zip -j workders-discord.zip ./workers/discord/*
+          aws lambda update-function-code --function-name=worker-discord --zip-file=fileb://workders-discord.zip
