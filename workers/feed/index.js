@@ -141,14 +141,23 @@ exports.handler = async (event) => {
 
 	console.log(request);
 
-	if ( request.status == 'success' && request.data && request.data.notifications && request.data.notifications.length > 0 )
+	if ( request.status == 'success' )
 	{
 		const discord_webhook_server_status = process.env.DISCORD_WEBHOOK_SERVER_STATUS;
 
 		let url = discord_webhook_server_status;
-		//' + request.data.notifications[ 0 ].message + '
-		let content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"teste de mensagem 02"}';
-
+		let content = '';
+		
+		if ( request.data && request.data.notifications && request.data.notifications.length > 0 )
+		{
+			//' + request.data.notifications[ 0 ].message + '
+			content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"Verificar status na nitrado"}';
+		}
+		else
+		{
+			content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"Sem notificações na nitrado"}';
+		}
+		
 		let submit = await do_post( url, content );
 		
 		console.log(submit);
