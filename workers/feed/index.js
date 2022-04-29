@@ -153,10 +153,10 @@ exports.handler = async (event) => {
 			//' + request.data.notifications[ 0 ].message + '
 			content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"Verificar status na nitrado"}';
 		}
-		else
+		/*else
 		{
 			content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"Sem notificações na nitrado"}';
-		}
+		}*/
 		
 		let submit = await do_post( url, content );
 		
