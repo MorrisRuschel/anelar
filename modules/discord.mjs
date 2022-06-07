@@ -23,7 +23,7 @@ export default class Discord
 	{
 		async send( channel_id, message )
 		{
-			let url = Discord.config.api + Discord.config.channels.base + Discord.config.channels.server_status + Discord.config.messages.base;
+			let url = Discord.config.api + Discord.config.channels.base + channel_id + Discord.config.messages.base;
 			
 			let headers = 
 			{
@@ -34,7 +34,7 @@ export default class Discord
 	
 			let payload = await Request.post( url, content, headers );
 				payload = JSON.parse( payload );
-
+		console.log(payload)
 			return ( payload?.id > 0 );
 		},
 
