@@ -11,12 +11,13 @@ export const handler = async (event) => {
 	};
 
 	let nitrado = new Nitrado();
+	let players = await nitrado.players.list();
 
-	if ( await nitrado.notifications.exists() )
+	if ( players )
 	{
 		let discord = new Discord();
-
-		if ( await discord.messages.send_server_status( 'Verificar status na Nitrado' ) )
+		
+		if ( await discord.messages.send_server_players( players ) )
 		{
 			response = {
 				statusCode: 200,
