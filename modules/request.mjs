@@ -2,7 +2,7 @@
 
 import https from 'https';
 
-export class request
+export default class Request
 {
 	static async get( url, options )
 	{
