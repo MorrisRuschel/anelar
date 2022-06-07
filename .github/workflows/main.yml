@@ -29,9 +29,10 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy $LAMBDA_FEED to AWS Lambda
-        run: >
+        run: |
           zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
+        run: >
           aws lambda update-function-configuration --function-name=$LAMBDA_FEED
             --handler=./api/$LAMBDA_FEED.handler
             --environment={
@@ -50,9 +51,10 @@ jobs:
           aws lambda update-function-configuration --function-name=$LAMBDA_SERVER_LOGS --handler=./api/$LAMBDA_SERVER_LOGS.handler
 
       - name: Deploy $LAMBDA_DISCORD to AWS Lambda
-        run: >
+        run: |
           zip -r $LAMBDA_DISCORD.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_DISCORD --zip-file=fileb://$LAMBDA_DISCORD.zip
+        run: >
           aws lambda update-function-configuration --function-name=$LAMBDA_DISCORD
             --handler=./api/$LAMBDA_DISCORD.handler
             --environment={
