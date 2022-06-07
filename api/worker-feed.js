@@ -17,7 +17,7 @@ export const handler = async (event) => {
 	{
 		let discord = new Discord();
 		
-		if ( await discord.messages.send_server_logs( players ) )
+		if ( await discord.messages.send_server_players( players ) )
 		{
 			response = {
 				statusCode: 200,
