@@ -89,17 +89,17 @@ export const handler = async (event) => {
 		if ( notifications?.data?.notifications?.length > 0 )
 		{
 			submit = await discord.messages.send_server_status( 'Verificar status na Nitrado' );
-			
+
 			if ( submit?.id > 0 )
 			{
-				let response = {
+				response = {
 					statusCode: 200,
 					body: JSON.stringify('Success #01. Internal success.'),
 				};
 			}
 			else
 			{
-				let response = {
+				response = {
 					statusCode: 200,
 					body: JSON.stringify('Error #03. Internal error.'),
 				};
@@ -108,8 +108,8 @@ export const handler = async (event) => {
 		else
 		{
 			//submit = await discord.messages.send_server_status( 'Sem notificações na Nitrado' );
-			
-			let response = {
+
+			response = {
 				statusCode: 200,
 				body: JSON.stringify('Success #02. Internal success.'),
 			};
@@ -117,7 +117,7 @@ export const handler = async (event) => {
 	}
 	else
 	{
-		let response = {
+		response = {
 			statusCode: 200,
 			body: JSON.stringify('Error #02. Internal error.'),
 		};
