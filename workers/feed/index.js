@@ -70,7 +70,7 @@ class nitrado
 
 			return payload;
 		}
-	}
+	} 
 }
 
 export const handler = async (event) => {
@@ -82,34 +82,38 @@ export const handler = async (event) => {
 
 	let notifications = await nitrado.notifications.get();
 
-	if ( notifications.status == 'success' )
+	if ( notifications?.status == 'success' )
 	{
 		let submit;
 
-		if ( notifications.data && notifications.data.notifications && notifications.data.notifications.length > 0 )
+		if ( notifications?.data?.notifications?.length > 0 )
 		{
 			submit = await discord.messages.send_server_status( 'Verificar status na Nitrado' );
+			
+			if ( submit?.id > 0 )
+			{
+				let response = {
+					statusCode: 200,
+					body: JSON.stringify('Success #01. Internal success.'),
+				};
+			}
+			else
+			{
+				let response = {
+					statusCode: 200,
+					body: JSON.stringify('Error #03. Internal error.'),
+				};
+			}
 		}
 		else
 		{
-			submit = await discord.messages.send_server_status( 'Sem notificações na nitrado' );
-		}
-
-		if ( submit.status == 'success' )
-		{
+			//submit = await discord.messages.send_server_status( 'Sem notificações na Nitrado' );
+			
 			let response = {
 				statusCode: 200,
-				body: JSON.stringify('Success #01. Internal success.'),
+				body: JSON.stringify('Success #02. Internal success.'),
 			};
 		}
-		else
-		{
-			let response = {
-				statusCode: 200,
-				body: JSON.stringify('Error #03. Internal error.'),
-			};
-		}
-
 	}
 	else
 	{
