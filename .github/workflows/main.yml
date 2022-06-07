@@ -28,9 +28,9 @@ jobs:
       - name: Deploy worker feed to AWS Lambda
         # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-configuration.html
         run: |
-          zip -j $LAMBDA_FEED.zip ./*
+          zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*"
           aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
-          aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./workers/feed/index.js
+          aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./workers/feed/index.handler
 
 #      - name: Deploy worker-discord to AWS Lambda
 #        run: |
