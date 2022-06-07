@@ -5,14 +5,14 @@ class discord
 	config =
 	{
 		api = 'https://discord.com/api/v10',
-		channels =
+		channels:
 		{
-			base = '/channels',
-			server_status = '/966470279092129842'
+			base: '/channels',
+			server_status: '/966470279092129842'
 		},
-		messages =
+		messages:
 		{
-			base = '/messages'
+			base: '/messages'
 		}
 	}
 
@@ -40,13 +40,13 @@ class Nitrado
 	config = 
 	{
 		api = 'https://api.nitrado.net',
-		services =
+		services:
 		{
-			base = '/services'
+			base: '/services'
 		},
-		notifications =
+		notifications:
 		{
-			base = '/notifications'
+			base: '/notifications'
 		}
 	}
 
