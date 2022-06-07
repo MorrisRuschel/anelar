@@ -5,6 +5,9 @@ on:
     branches:
     - main
 
+env:
+  LAMBDA_FEED: 'worker-feed'
+
 jobs:
   # JOB 01
   Deploying_functions:
@@ -23,11 +26,13 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy worker feed to AWS Lambda
+        # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-configuration.html
         run: |
-          zip -j workers-feed.zip ./workers/feed/*
-          aws lambda update-function-code --function-name=worker-feed --zip-file=fileb://workers-feed.zip
+          zip -j $LAMBDA_FEED.zip ./*
+          aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
+          aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./workers/feed/index.js
 
-      - name: Deploy worker-discord to AWS Lambda
-        run: |
-          zip -j workders-discord.zip ./workers/discord/*
-          aws lambda update-function-code --function-name=worker-discord --zip-file=fileb://workders-discord.zip
+#      - name: Deploy worker-discord to AWS Lambda
+#        run: |
+#          zip -j workders-discord.zip ./workers/discord/*
+#          aws lambda update-function-code --function-name=worker-discord --zip-file=fileb://workders-discord.zip

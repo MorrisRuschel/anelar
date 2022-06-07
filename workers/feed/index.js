@@ -1,10 +1,12 @@
+"use strict";
+
 import request from '/modules/request';
 
 class discord
 {
 	config =
 	{
-		api = 'https://discord.com/api/v10',
+		api: 'https://discord.com/api/v10',
 		channels:
 		{
 			base: '/channels',
@@ -39,7 +41,7 @@ class Nitrado
 {
 	config = 
 	{
-		api = 'https://api.nitrado.net',
+		api: 'https://api.nitrado.net',
 		services:
 		{
 			base: '/services'
