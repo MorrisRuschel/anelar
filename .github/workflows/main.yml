@@ -7,6 +7,8 @@ on:
 
 env:
   LAMBDA_FEED: 'worker-feed'
+  LAMBDA_DISCORD: 'worker-discord'
+  LAMBDA_SERVER_LOGS: 'worker-server-logs'
 
 jobs:
   # JOB 01
@@ -18,6 +20,7 @@ jobs:
         with:
           node-version: '14'
 
+      # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-configuration.html
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -26,13 +29,13 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy $LAMBDA_FEED to AWS Lambda
-        # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-configuration.html
         run: |
           zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
-          aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./workers/feed/index.handler
+          aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./api/$LAMBDA_FEED.handler
 
-#      - name: Deploy worker-discord to AWS Lambda
-#        run: |
-#          zip -j workders-discord.zip ./workers/discord/*
-#          aws lambda update-function-code --function-name=worker-discord --zip-file=fileb://workders-discord.zip
+      - name: Deploy $LAMBDA_SERVER_LOGS to AWS Lambda
+        run: |
+          zip -r $LAMBDA_SERVER_LOGS.zip . -x ".git/*" ".github/*" "static/*"
+          aws lambda update-function-code --function-name=$LAMBDA_SERVER_LOGS --zip-file=fileb://$LAMBDA_SERVER_LOGS.zip
+          aws lambda update-function-configuration --function-name=$LAMBDA_SERVER_LOGS --handler=./api/$LAMBDA_SERVER_LOGS.handler

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 import Nitrado from '../../modules/nitrado.mjs';
 import Discord from '../../modules/discord.mjs';
