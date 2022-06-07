@@ -29,13 +29,37 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy $LAMBDA_FEED to AWS Lambda
-        run: |
+        run: >
           zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
-          aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./api/$LAMBDA_FEED.handler
+          aws lambda update-function-configuration --function-name=$LAMBDA_FEED
+            --handler=./api/$LAMBDA_FEED.handler
+            --environment={
+                "Variables": {
+                  "DISCORD_BOT_TOKEN": "${{ secrets.DISCORD_BOT_TOKEN }}",
+                  "NITRADO_ACCOUNT_ID": "${{ secrets.NITRADO_ACCOUNT_ID }}",
+                  "NITRADO_ACCOUNT_TOKEN": "${{ secrets.NITRADO_ACCOUNT_TOKEN }}",
+                  "NITRADO_SERVER_ID": "${{ secrets.NITRADO_SERVER_ID }}"
+              }
+            }
 
       - name: Deploy $LAMBDA_SERVER_LOGS to AWS Lambda
         run: |
           zip -r $LAMBDA_SERVER_LOGS.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_SERVER_LOGS --zip-file=fileb://$LAMBDA_SERVER_LOGS.zip
           aws lambda update-function-configuration --function-name=$LAMBDA_SERVER_LOGS --handler=./api/$LAMBDA_SERVER_LOGS.handler
+
+      - name: Deploy $LAMBDA_DISCORD to AWS Lambda
+        run: >
+          zip -r $LAMBDA_DISCORD.zip . -x ".git/*" ".github/*" "static/*"
+          aws lambda update-function-code --function-name=$LAMBDA_DISCORD --zip-file=fileb://$LAMBDA_DISCORD.zip
+          aws lambda update-function-configuration --function-name=$LAMBDA_DISCORD
+            --handler=./api/$LAMBDA_DISCORD.handler
+            --environment={
+                "Variables": {
+                  "DISCORD_BOT_TOKEN": "${{ secrets.DISCORD_BOT_TOKEN }}",
+                  "NITRADO_ACCOUNT_ID": "${{ secrets.NITRADO_ACCOUNT_ID }}",
+                  "NITRADO_ACCOUNT_TOKEN": "${{ secrets.NITRADO_ACCOUNT_TOKEN }}",
+                  "NITRADO_SERVER_ID": "${{ secrets.NITRADO_SERVER_ID }}"
+              }
+            }

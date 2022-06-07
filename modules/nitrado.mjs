@@ -40,6 +40,27 @@ export default class Nitrado
 
 	players = 
 	{
+		async online()
+		{
+			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/file_server/download?file=/games/' + process.env.NITRADO_ACCOUNT_ID + '/noftp/dayzxb/config/DayZServer_X1_x64.ADM';
+
+			let options = {
+				headers:
+				{
+					Authorization: process.env.NITRADO_ACCOUNT_TOKEN
+				}
+			};
+			
+			// BUSCA O LINK DO ARQUIVO
+			let response = await Request.get( url, options );
+				response = JSON.parse( response );
+
+			if ( response?.status == 'success' && response?.data && response?.data?.token && response?.data?.token?.url )
+			{
+				return await Request.download( response.data.token.url );
+			}
+		},
+
 		async list()
 		{
 			let nitrado = new Nitrado();
