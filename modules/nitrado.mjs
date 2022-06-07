@@ -42,7 +42,9 @@ export default class Nitrado
 	{
 		async list()
 		{
-			let content = Nitrado.files.server_logs();
+			let nitrado = new Nitrado();
+			
+			let content = await nitrado.files.server_logs();
 
 			let lines = content.split( '\n' ).reverse();
 			let found = false;
@@ -67,7 +69,7 @@ export default class Nitrado
 				
 				if ( found )
 				{
-					players_list += this.get_player( line ) + '\n';
+					players_list += this.get_name( line ) + ' ' + this.get_position( line ) + '\n';
 				}
 			}
 
@@ -77,14 +79,6 @@ export default class Nitrado
 			return players_list;
 		},
 
-		get_player( line )
-		{
-			let player_name = this.get_player_name( line );
-			let player_position = this.get_player_position( line );
-			
-			return player_name + ' ' + player_position;
-		},
-	
 		get_name( line )
 		{
 			let start = 19; // line.indexOf( '"' );
@@ -105,7 +99,7 @@ export default class Nitrado
 	{
 		async server_logs()
 		{
-			let url = Nitrado.config.api + + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/file_server/download?file=/games/' + process.env.NITRADO_ACCOUNT_ID + '/noftp/dayzxb/config/DayZServer_X1_x64.ADM';
+			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/file_server/download?file=/games/' + process.env.NITRADO_ACCOUNT_ID + '/noftp/dayzxb/config/DayZServer_X1_x64.ADM';
 
 			let options = {
 				headers:
@@ -118,9 +112,9 @@ export default class Nitrado
 			let response = await Request.get( url, options );
 				response = JSON.parse( response );
 
-			if ( request?.status == 'success' && request?.data && request?.data?.token && request?.data?.token?.url )
+			if ( response?.status == 'success' && response?.data && response?.data?.token && response?.data?.token?.url )
 			{
-				return await Request.download( request.data.token.url );
+				return await Request.download( response.data.token.url );
 			}
 		}
 	}

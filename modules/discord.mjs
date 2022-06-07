@@ -10,7 +10,7 @@ export default class Discord
 		channels:
 		{
 			base: '/channels',
-			server_status: '/966470279092129842',
+			server_logs: '/966470279092129842',
 			server_players: '/966476048952873011'
 		},
 		messages:
@@ -38,9 +38,9 @@ export default class Discord
 			return ( payload?.id > 0 );
 		},
 
-		async send_server_status( message )
+		async send_server_logs( message )
 		{
-			return await this.send( Discord.config.channels.server_status, message );
+			return await this.send( Discord.config.channels.server_logs, message );
 		},
 
 		async send_server_players( message )
