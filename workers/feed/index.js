@@ -1,121 +1,75 @@
-async function do_post( url, content )
+import request from '/modules/request';
+
+class discord
 {
-	const https = require( 'https' );
-
-	const options =
+	config =
 	{
-		method: 	'POST',
-		headers:
+		api = 'https://discord.com/api/v10',
+		channels =
 		{
-			'Content-Type': 	'application/json',
-			'Content-Length':	Buffer.byteLength( content )
+			base = '/channels',
+			server_status = '/966470279092129842'
+		},
+		messages =
+		{
+			base = '/messages'
 		}
-	};
+	}
 
-	return new Promise((resolve, reject) => {
-	console.log('t1');
-		const req = https.request
-		(	
-			url,
-			options,
-			(res) =>
+	messages = 
+	{
+		async send( channel_id, message )
+		{
+			let url = this.config.api + this.config.channels.base + this.config.channels.server_status + this.config.messages.base;
+			
+			let headers = 
 			{
-				res.setEncoding( 'utf8' );
-					console.log('t2');
+				Authorization: process.env.DISCORD_BOT_TOKEN
+			};
+		
+			let content = '{"content":"' + message + '"}';
+	
+			return await request.post( url, content, headers );
+		}
+	}
+}
 
-				let response2 = '';
-
-				res.on
-				(
-					'data',
-					( chunk ) =>
-					{
-						response2 += chunk;
-					}
-				);
-				res.on
-				(
-					'end',
-					() =>
-					{
-						resolve( response2 );
-					}
-				);
-
-			}
-		).on
-		(
-			'error',
-			(error) =>
-			{
-				console.error( error );
-			}
-		);
-
-		req.write( content );
-		req.end();
-	});
-};
-
-async function do_get( url, options )
+// Adicionar uma interface
+class Nitrado
 {
-	const https = require( 'https' );
-
-	/*const options =
+	config = 
 	{
-		hostname:	'www.domain.com.br',
-		port:		443,
-		path:		'/',
-		method: 	'GET',
-		headers:
+		api = 'https://api.nitrado.net',
+		services =
 		{
-			'Content-Type': 	'application/json'
+			base = '/services'
+		},
+		notifications =
+		{
+			base = '/notifications'
 		}
-	};*/
+	}
 
-	return new Promise((resolve, reject) => {
-	console.log('t1');
-		const req = https.request
-		(	
-			url,
-			options,
-			(res) =>
-			{
-				res.setEncoding( 'utf8' );
-					console.log('t2');
+	notifications = 
+	{
+		async get()
+		{
+			let url = this.config.api + this.config.services.base + '/' + process.env.NITRADO_SERVER_ID + this.config.notifications.base;
 
-				let response2 = '';
+			let options = {
+				headers:
+				{
+					Authorization: process.env.NITRADO_ACCOUNT_TOKEN
+				}
+			};
+			
+			let payload = await request.get( url, options );
+				payload = JSON.parse( payload );
 
-				res.on
-				(
-					'data',
-					( chunk ) =>
-					{
-						response2 += chunk;
-					}
-				);
-				res.on
-				(
-					'end',
-					() =>
-					{
-						resolve( response2 );
-					}
-				);
-
-			}
-		).on
-		(
-			'error',
-			(error) =>
-			{
-				console.error( error );
-			}
-		);
-
-		req.end();
-	});
-};
+			return payload;
+		}
+	}
+}
 
 exports.handler = async (event) => {
 
@@ -124,43 +78,22 @@ exports.handler = async (event) => {
 		body: JSON.stringify('Error #01. Internal error.'),
 	};
 
-	const server_api = 'https://api.nitrado.net';
-	const server_id = process.env.SERVER_ID;
-	const account_id = process.env.ACCOUNT_ID;
-
-	let url = server_api + '/services/' + server_id + '/notifications';
-	let options = {
-		headers:
-		{
-			Authorization: process.env.ACCOUNT_TOKEN
-		}
-	};
+	const nitrado = new Nitrado();
 	
-	let request = await do_get( url, options );
-		request = JSON.parse( request );
+	let notifications = nitrado.notifications.get();
 
-	console.log(request);
-
-	if ( request.status == 'success' )
+	if ( notifications.status == 'success' )
 	{
-		const discord_webhook_server_status = process.env.DISCORD_WEBHOOK_SERVER_STATUS;
+		let submit;
 
-		let url = discord_webhook_server_status;
-		let content = '';
-		
-		if ( request.data && request.data.notifications && request.data.notifications.length > 0 )
+		if ( notifications.data && notifications.data.notifications && notifications.data.notifications.length > 0 )
 		{
-			//' + request.data.notifications[ 0 ].message + '
-			content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"Verificar status na nitrado"}';
+			submit = await discord.messages.send( 'Verificar status na Nitrado' );
 		}
 		else
 		{
-			content = '{"username":"Nitrado Notifications","avatar_url":"https://play-lh.googleusercontent.com/IA3SyOgZX3aHo0jYUH9NlByJbkeDJuDEMsPVBoD3Ol3jLEpcK4yjwqa6UoHCFhEBMMM=s360-rw","content":"Sem notificações na nitrado"}';
+			submit = await discord.messages.send( 'Sem notificações na nitrado' );
 		}
-		
-		let submit = await do_post( url, content );
-		
-		console.log(submit);
 
 		if ( submit.status == 'success' )
 		{
