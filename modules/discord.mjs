@@ -28,6 +28,7 @@ export default class Discord
 			
 			let headers = 
 			{
+				method: 'PATCH',
 				Authorization: process.env.DISCORD_BOT_TOKEN
 			};
 		

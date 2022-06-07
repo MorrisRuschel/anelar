@@ -51,11 +51,10 @@ export default class Nitrado
 				}
 			};
 			
-			// BUSCA O LINK DO ARQUIVO
 			let response = await Request.get( url, options );
 				response = JSON.parse( response );
 
-			if ( response?.status == 'success' && response?.data && response?.data?.gameserver && response?.data?.gameserver?.player_current && response?.data?.gameserver?.player_max )
+			if ( response?.status == 'success' && response?.data?.gameserver?.query?.player_current && response?.data?.gameserver?.query?.player_max )
 			{
 				// response.data.gameserver.status: != started
 				// response.data.gameserver.query.player_current

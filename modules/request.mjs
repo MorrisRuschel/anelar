@@ -55,7 +55,7 @@ export default class Request
 	{
 		const options =
 		{
-			method: 	'POST',
+			method: 	( headers?.method ? headers?.method : 'POST' ),
 			headers:
 			{
 				'Content-Type': 	'application/json',
