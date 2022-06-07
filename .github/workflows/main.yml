@@ -48,11 +48,4 @@ jobs:
           aws lambda update-function-code --function-name=$LAMBDA_DISCORD --zip-file=fileb://$LAMBDA_DISCORD.zip
           aws lambda update-function-configuration --function-name=$LAMBDA_DISCORD \
             --handler=./api/$LAMBDA_DISCORD.handler \
-            --environment='{ \
-                "Variables": { \
-                  "DISCORD_BOT_TOKEN": "${{ secrets.DISCORD_BOT_TOKEN }}", \ 
-                  "NITRADO_ACCOUNT_ID": "${{ secrets.NITRADO_ACCOUNT_ID }}", \
-                  "NITRADO_ACCOUNT_TOKEN": "${{ secrets.NITRADO_ACCOUNT_TOKEN }}", \
-                  "NITRADO_SERVER_ID": "${{ secrets.NITRADO_SERVER_ID }}" \
-              } \
-            }'
+            --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
