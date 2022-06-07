@@ -17,7 +17,7 @@ export const handler = async (event) => {
 	{
 		let discord = new Discord();
 		
-		if ( await discord.messages.send_server_players( players ) )
+		if ( await discord.channels.players_online( players ) )
 		{
 			response = {
 				statusCode: 200,

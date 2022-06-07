@@ -42,7 +42,7 @@ export default class Nitrado
 	{
 		async online()
 		{
-			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/file_server/download?file=/games/' + process.env.NITRADO_ACCOUNT_ID + '/noftp/dayzxb/config/DayZServer_X1_x64.ADM';
+			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers';
 
 			let options = {
 				headers:
@@ -55,9 +55,18 @@ export default class Nitrado
 			let response = await Request.get( url, options );
 				response = JSON.parse( response );
 
-			if ( response?.status == 'success' && response?.data && response?.data?.token && response?.data?.token?.url )
+			if ( response?.status == 'success' && response?.data && response?.data?.gameserver && response?.data?.gameserver?.player_current && response?.data?.gameserver?.player_max )
 			{
-				return await Request.download( response.data.token.url );
+				// response.data.gameserver.status: != started
+				// response.data.gameserver.query.player_current
+				// response.data.gameserver.query.player_max
+				// response.data.gameserver.query.version
+
+				return 'ONLINE ' + response.data.gameserver.query.player_current + '/' + response.data.gameserver.query.player_max;
+			}
+			else
+			{
+				return 'ONLINE ??/32';
 			}
 		},
 
