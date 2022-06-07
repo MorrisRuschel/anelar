@@ -25,10 +25,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy worker feed to AWS Lambda
+      - name: Deploy $LAMBDA_FEED to AWS Lambda
         # https://awscli.amazonaws.com/v2/documentation/api/latest/reference/lambda/update-function-configuration.html
         run: |
-          zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*"
+          zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
           aws lambda update-function-configuration --function-name=$LAMBDA_FEED --handler=./workers/feed/index.handler
 

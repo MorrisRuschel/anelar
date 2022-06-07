@@ -1,8 +1,8 @@
 import https from 'https';
 
-class request
+export class request
 {
-	async get( url, options )
+	static async get( url, options )
 	{
 		options = options ? options : {};
 
@@ -49,7 +49,7 @@ class request
 		});
 	}
 
-	async post( url, content, headers )
+	static async post( url, content, headers )
 	{
 		const options =
 		{
@@ -105,7 +105,7 @@ class request
 		});
 	}
 
-	async download( url )
+	static async download( url )
 	{
 		return new Promise((resolve, reject) => {
 			const req = https.request
@@ -147,6 +147,4 @@ class request
 			req.end();
 		});
 	}
-};
-
-module.exports = request;
+}

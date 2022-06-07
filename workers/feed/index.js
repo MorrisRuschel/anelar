@@ -1,10 +1,10 @@
 "use strict";
 
-import request from '/modules/request';
+import { request } from '../../modules/request.mjs';
 
 class discord
 {
-	config =
+	static config =
 	{
 		api: 'https://discord.com/api/v10',
 		channels:
@@ -18,11 +18,11 @@ class discord
 		}
 	}
 
-	messages = 
+	static messages = 
 	{
-		async send( channel_id, message )
+		async send_server_status( message )
 		{
-			let url = this.config.api + this.config.channels.base + this.config.channels.server_status + this.config.messages.base;
+			let url = discord.config.api + discord.config.channels.base + discord.config.channels.server_status + discord.config.messages.base;
 			
 			let headers = 
 			{
@@ -37,9 +37,9 @@ class discord
 }
 
 // Adicionar uma interface
-class Nitrado
+class nitrado
 {
-	config = 
+	static config = 
 	{
 		api: 'https://api.nitrado.net',
 		services:
@@ -52,11 +52,11 @@ class Nitrado
 		}
 	}
 
-	notifications = 
+	static notifications = 
 	{
 		async get()
 		{
-			let url = this.config.api + this.config.services.base + '/' + process.env.NITRADO_SERVER_ID + this.config.notifications.base;
+			let url = nitrado.config.api + nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + nitrado.config.notifications.base;
 
 			let options = {
 				headers:
@@ -73,16 +73,14 @@ class Nitrado
 	}
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
 
 	let response = {
 		statusCode: 200,
 		body: JSON.stringify('Error #01. Internal error.'),
 	};
 
-	const nitrado = new Nitrado();
-	
-	let notifications = nitrado.notifications.get();
+	let notifications = await nitrado.notifications.get();
 
 	if ( notifications.status == 'success' )
 	{
@@ -90,11 +88,11 @@ exports.handler = async (event) => {
 
 		if ( notifications.data && notifications.data.notifications && notifications.data.notifications.length > 0 )
 		{
-			submit = await discord.messages.send( 'Verificar status na Nitrado' );
+			submit = await discord.messages.send_server_status( 'Verificar status na Nitrado' );
 		}
 		else
 		{
-			submit = await discord.messages.send( 'Sem notificações na nitrado' );
+			submit = await discord.messages.send_server_status( 'Sem notificações na nitrado' );
 		}
 
 		if ( submit.status == 'success' )
