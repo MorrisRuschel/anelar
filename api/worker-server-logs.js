@@ -1,7 +1,7 @@
 'use strict';
 
-import Nitrado from '../../modules/nitrado.mjs';
-import Discord from '../../modules/discord.mjs';
+import Nitrado from '../modules/nitrado.mjs';
+import Discord from '../modules/discord.mjs';
 
 export const handler = async (event) => {
 
