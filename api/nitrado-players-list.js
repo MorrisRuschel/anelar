@@ -16,9 +16,9 @@ export const handler = async (event) => {
 
 	let message = '**Player List**\\n';
 
-	for ( let player in nitrado_players_list )
+	for ( let index in nitrado_players_list )
 	{
-		message += player.gamertag + ' ' + iZurvive.config.api + iZurvive.config.location.base + player.position + '\\n';
+		message += nitrado_players_list[ index ].gamertag + ' ' + iZurvive.config.api + iZurvive.config.location.base + nitrado_players_list[ index ].position + '\\n';
 	}
 		//players = players.replace( /"/g, '\'' ).replace( /\n/g, '\\n' );
 
