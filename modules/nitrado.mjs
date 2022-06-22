@@ -149,7 +149,9 @@ export default class Nitrado
 			let nitrado = new Nitrado();
 			
 			let content = await nitrado.files.server_logs();
+			console.log(content);
 
+			// TODO tratar caso não retorne o arquivo
 			let lines = content.split( '\n' ).reverse();
 			let found = false;
 			let players = [];
