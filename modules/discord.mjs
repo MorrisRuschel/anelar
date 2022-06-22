@@ -10,6 +10,7 @@ export default class Discord
 		channels:
 		{
 			base: '/channels',
+			// TODO passar essas configs para o github / aws
 			server_logs: '/966470279092129842',
 			server_players: '/966476048952873011',
 			server_players_online: '/983475044086841344'
@@ -22,6 +23,8 @@ export default class Discord
 
 	channels = 
 	{
+		// TODO adicionar método de troca de nome de canal
+
 		async players_online( name )
 		{
 			let url = Discord.config.api + Discord.config.channels.base + Discord.config.channels.server_players_online;

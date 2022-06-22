@@ -6,9 +6,11 @@ on:
     - main
 
 env:
+  PROJECT: 'anelar'
+  ENVIRONMENT: 'prd'
   LAMBDA_FEED: 'worker-feed'
   LAMBDA_DISCORD: 'worker-discord'
-  LAMBDA_SERVER_LOGS: 'worker-server-logs'
+  NITRADO_SERVER_STATUS: 'nitrado-server-status'
 
 jobs:
   # JOB 01
@@ -36,18 +38,18 @@ jobs:
             --handler=./api/$LAMBDA_FEED.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
 
-      - name: Deploy $LAMBDA_SERVER_LOGS to AWS Lambda
-        run: |
-          zip -r $LAMBDA_SERVER_LOGS.zip . -x ".git/*" ".github/*" "static/*"
-          aws lambda update-function-code --function-name=$LAMBDA_SERVER_LOGS --zip-file=fileb://$LAMBDA_SERVER_LOGS.zip
-          aws lambda update-function-configuration --function-name=$LAMBDA_SERVER_LOGS \
-            --handler=./api/$LAMBDA_SERVER_LOGS.handler \
-            --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
-
       - name: Deploy $LAMBDA_DISCORD to AWS Lambda
         run: |
           zip -r $LAMBDA_DISCORD.zip . -x ".git/*" ".github/*" "static/*"
           aws lambda update-function-code --function-name=$LAMBDA_DISCORD --zip-file=fileb://$LAMBDA_DISCORD.zip
           aws lambda update-function-configuration --function-name=$LAMBDA_DISCORD \
             --handler=./api/$LAMBDA_DISCORD.handler \
+            --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
+
+      - name: Deploy $NITRADO_SERVER_STATUS to AWS Lambda
+        run: |
+          zip -r $NITRADO_SERVER_STATUS.zip . -x ".git/*" ".github/*" "static/*"
+          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_SERVER_STATUS --zip-file=fileb://$NITRADO_SERVER_STATUS.zip
+          aws lambda update-function-configuration --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_SERVER_STATUS \
+            --handler=./api/$NITRADO_SERVER_STATUS.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
