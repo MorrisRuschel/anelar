@@ -60,8 +60,16 @@ export default class Discord
 			return ( payload?.id > 0 );
 		},
 
-		async send_server_logs( message )
+		async send_server_logs( players )
 		{
+			let message = '**Player List**\\n';
+
+			for ( let player in players )
+			{
+				message += player.gamertag + ' ' + iZurvive.config.api + iZurvive.config.location.base + player.position + '\\n';
+			}
+				//players = players.replace( /"/g, '\'' ).replace( /\n/g, '\\n' );
+
 			return await this.send( Discord.config.channels.server_logs, message );
 		},
 

@@ -13,30 +13,20 @@ export const handler = async (event) => {
 	let nitrado = new Nitrado();
 	let players = await nitrado.players.list();
 
-	if ( players )
+	let discord = new Discord();
+	
+	if ( await discord.messages.send_server_players( players ) )
 	{
-		let discord = new Discord();
-		
-		if ( await discord.messages.send_server_players( players ) )
-		{
-			response = {
-				statusCode: 200,
-				body: JSON.stringify('Success #01. Internal success.'),
-			};
-		}
-		else
-		{
-			response = {
-				statusCode: 200,
-				body: JSON.stringify('Error #02. Internal error.'),
-			};
-		}
+		response = {
+			statusCode: 200,
+			body: JSON.stringify('Success #01. Internal success.'),
+		};
 	}
 	else
 	{
 		response = {
 			statusCode: 200,
-			body: JSON.stringify('Success #02. Internal success.'),
+			body: JSON.stringify('Error #02. Internal error.'),
 		};
 	}
 	

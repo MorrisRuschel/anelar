@@ -1,7 +1,6 @@
 'use strict';
 
 import Request from './request.mjs';
-import iZurvive from './izurvive.mjs';
 
 export default class Nitrado
 {
@@ -16,6 +15,72 @@ export default class Nitrado
 		{
 			base: '/notifications'
 		}
+	}
+
+	server = 
+	{
+		async status()
+		{
+			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers';
+
+			let options = {
+				headers:
+				{
+					Authorization: process.env.NITRADO_ACCOUNT_TOKEN
+				}
+			};
+			
+			let response = await Request.get( url, options );
+				response = JSON.parse( response );
+
+			if ( response?.status == 'success' )
+			{
+				let status = [ 'started', 'restarting', 'stopping' ]; // stopped
+
+				if ( status.indexOf( response?.data?.gameserver?.status ) == -1 )
+				{
+					return await this.restart();
+				}
+				else
+				{
+					return response.data.gameserver.status;
+				}
+			}
+			else
+			{
+				/*
+				needs a throw
+				*/
+				return 'The application cannot perform a restart server';
+			}
+		},
+
+		async restart()
+		{
+			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/restart';
+
+			let options = {
+				headers:
+				{
+					Authorization: process.env.NITRADO_ACCOUNT_TOKEN
+				}
+			};
+			
+			let response = await Request.post( url, options );
+				response = JSON.parse( response );
+
+			if ( response?.status == 'success' )
+			{
+				return response.message;
+			}
+			else
+			{
+				/*
+				needs a throw
+				*/
+				return 'The application cannot perform a restart server';
+			}
+		},
 	}
 
 	notifications = 
@@ -77,8 +142,7 @@ export default class Nitrado
 
 			let lines = content.split( '\n' ).reverse();
 			let found = false;
-			
-			let players_list = '**Player List**\n';
+			let players = [];
 		
 			for ( let index in lines )
 			{
@@ -86,7 +150,6 @@ export default class Nitrado
 				
 				if ( line.indexOf( 'PlayerList' ) > -1 && found )
 				{
-					//found = false;
 					break;
 				}
 	
@@ -98,14 +161,11 @@ export default class Nitrado
 				
 				if ( found )
 				{
-					players_list += this.get_name( line ) + ' ' + this.get_position( line ) + '\n';
+					players.push( { 'gamertag': this.get_name( line ), 'position': this.get_position( line ) } );
 				}
 			}
 
-			players_list = players_list.replace( /"/g, '\'' ).replace( /\n/g, '\\n' );
-			//players_list = players_list.slice(-2000);
-
-			return players_list;
+			return players;
 		},
 
 		get_name( line )
@@ -119,8 +179,8 @@ export default class Nitrado
 		get_position( line )
 		{
 			let start = line.indexOf( 'pos=' ) + 5;
-			
-			return iZurvive.config.api + iZurvive.config.location.base + line.slice( start, -2 ).replace( /,/g, ';' ).replace( / /g, '' );
+
+			return line.slice( start, -2 ).replace( /,/g, ';' ).replace( / /g, '' );
 		}
 	}
 
