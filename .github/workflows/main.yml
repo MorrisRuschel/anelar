@@ -8,7 +8,7 @@ on:
 env:
   PROJECT: 'anelar'
   ENVIRONMENT: 'prd'
-  LAMBDA_FEED: 'worker-feed'
+  NITRADO_PLAYERS_LIST: 'nitrado-players-list'
   LAMBDA_DISCORD: 'worker-discord'
   NITRADO_SERVER_STATUS: 'nitrado-server-status'
 
@@ -30,12 +30,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy $LAMBDA_FEED to AWS Lambda
+      # TODO remover zips após subi-los
+      - name: Deploy $NITRADO_PLAYERS_LIST to AWS Lambda
         run: |
-          zip -r $LAMBDA_FEED.zip . -x ".git/*" ".github/*" "static/*" 
-          aws lambda update-function-code --function-name=$LAMBDA_FEED --zip-file=fileb://$LAMBDA_FEED.zip
-          aws lambda update-function-configuration --function-name=$LAMBDA_FEED \
-            --handler=./api/$LAMBDA_FEED.handler \
+          zip -r $NITRADO_PLAYERS_LIST.zip . -x ".git/*" ".github/*" "static/*" 
+          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_LIST --zip-file=fileb://$NITRADO_PLAYERS_LIST.zip
+          aws lambda update-function-configuration --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_LIST \
+            --handler=./api/$NITRADO_PLAYERS_LIST.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
 
       - name: Deploy $LAMBDA_DISCORD to AWS Lambda
