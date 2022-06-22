@@ -19,7 +19,7 @@ export default class Nitrado
 
 	server = 
 	{
-		async status()
+		async details()
 		{
 			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers';
 
@@ -31,7 +31,14 @@ export default class Nitrado
 			};
 			
 			let response = await Request.get( url, options );
-				response = JSON.parse( response );
+			return response = JSON.parse( response );
+		},
+
+		async status()
+		{
+			let nitrado = new Nitrado();
+
+			let response = await nitrado.server.details();
 
 			if ( response?.status == 'success' )
 			{
@@ -105,32 +112,35 @@ export default class Nitrado
 
 	players = 
 	{
-		async online()
+		async online() // INT
 		{
-			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers';
+			let nitrado = new Nitrado();
 
-			let options = {
-				headers:
-				{
-					Authorization: process.env.NITRADO_ACCOUNT_TOKEN
-				}
-			};
-			
-			let response = await Request.get( url, options );
-				response = JSON.parse( response );
+			let response = await nitrado.server.details();
 
-			if ( response?.status == 'success' && response?.data?.gameserver?.query?.player_current && response?.data?.gameserver?.query?.player_max )
+			if ( response?.status == 'success' && response?.data?.gameserver?.query?.player_current )
 			{
-				// response.data.gameserver.status: != started
-				// response.data.gameserver.query.player_current
-				// response.data.gameserver.query.player_max
-				// response.data.gameserver.query.version
-
-				return 'ONLINE ' + response.data.gameserver.query.player_current + '/' + response.data.gameserver.query.player_max;
+				return response.data.gameserver.query.player_current;
 			}
 			else
 			{
-				return 'ONLINE ??/32';
+				return 0;
+			}
+		},
+
+		async max() // INT
+		{
+			let nitrado = new Nitrado();
+
+			let response = await nitrado.server.details();
+
+			if ( response?.status == 'success' && response?.data?.gameserver?.query?.player_max )
+			{
+				return response.data.gameserver.query.player_max;
+			}
+			else
+			{
+				return 0;
 			}
 		},
 

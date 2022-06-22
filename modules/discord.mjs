@@ -11,8 +11,8 @@ export default class Discord
 		{
 			base: '/channels',
 			// TODO passar essas configs para o github / aws
-			server_logs: '/966470279092129842',
-			server_players: '/966476048952873011',
+			server_status: '/966470279092129842',
+			server_players_list: '/966476048952873011',
 			server_players_online: '/983475044086841344'
 		},
 		messages:
@@ -23,11 +23,9 @@ export default class Discord
 
 	channels = 
 	{
-		// TODO adicionar método de troca de nome de canal
-
-		async players_online( name )
+		async update( channel_id, name )
 		{
-			let url = Discord.config.api + Discord.config.channels.base + Discord.config.channels.server_players_online;
+			let url = Discord.config.api + Discord.config.channels.base + channel_id;
 			
 			let headers = 
 			{
@@ -41,6 +39,11 @@ export default class Discord
 				payload = JSON.parse( payload );
 
 			return ( payload?.id > 0 );
+		},
+
+		async players_online( name )
+		{
+			return await this.update( Discord.config.channels.server_players_online, name );
 		}
 	}
 
@@ -63,22 +66,14 @@ export default class Discord
 			return ( payload?.id > 0 );
 		},
 
-		async send_server_logs( players )
+		async send_server_players_list( message )
 		{
-			let message = '**Player List**\\n';
-
-			for ( let player in players )
-			{
-				message += player.gamertag + ' ' + iZurvive.config.api + iZurvive.config.location.base + player.position + '\\n';
-			}
-				//players = players.replace( /"/g, '\'' ).replace( /\n/g, '\\n' );
-
-			return await this.send( Discord.config.channels.server_logs, message );
+			return await this.send( Discord.config.channels.server_players_list, message );
 		},
 
-		async send_server_players( message )
+		async send_server_status( message )
 		{
-			return await this.send( Discord.config.channels.server_players, message );
+			return await this.send( Discord.config.channels.server_status, message );
 		}
 	}
 }

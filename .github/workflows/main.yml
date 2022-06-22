@@ -33,6 +33,7 @@ jobs:
       # TODO remover zips após subi-los
       # TODO adicionar vinculo ao eventbridge
       # TODO criar um for para essas funções, colocando dentro de um array
+      # TODO subir somente o controller da função
       - name: Deploy $NITRADO_PLAYERS_LIST to AWS Lambda
         run: |
           zip -r $NITRADO_PLAYERS_LIST.zip . -x ".git/*" ".github/*" "static/*" 

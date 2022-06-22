@@ -17,7 +17,7 @@ export const handler = async (event) => {
 	{
 		let discord = new Discord();
 
-		if ( await discord.messages.send_server_logs( nitrado_server_status ) )
+		if ( await discord.messages.send_server_status( nitrado_server_status ) )
 		{
 			response = {
 				statusCode: 200,

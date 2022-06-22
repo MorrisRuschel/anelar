@@ -11,34 +11,26 @@ export const handler = async (event) => {
 	};
 
 	let nitrado = new Nitrado();
-	let players = await nitrado.players.online();
+	let nitrado_players_online = await nitrado.players.online();
+	let nitrado_players_max = await nitrado.players.max();
 
-	if ( players )
+	let discord = new Discord();
+	let discord_channel_name = 'PLAYERS ' + nitrado_players_online + '/' + nitrado_players_max;
+	
+	if ( await discord.channels.players_online( discord_channel_name ) )
 	{
-		let discord = new Discord();
-		
-		if ( await discord.channels.players_online( players ) )
-		{
-			response = {
-				statusCode: 200,
-				body: JSON.stringify('Success #01. Internal success.'),
-			};
-		}
-		else
-		{
-			response = {
-				statusCode: 200,
-				body: JSON.stringify('Error #02. Internal error.'),
-			};
-		}
+		response = {
+			statusCode: 200,
+			body: JSON.stringify('Success #01. Internal success.'),
+		};
 	}
 	else
 	{
 		response = {
 			statusCode: 200,
-			body: JSON.stringify('Success #02. Internal success.'),
+			body: JSON.stringify('Error #02. Internal error.'),
 		};
 	}
-	
+
 	return response;
 };

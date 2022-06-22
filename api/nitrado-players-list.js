@@ -2,6 +2,7 @@
 
 import Nitrado from '../modules/nitrado.mjs';
 import Discord from '../modules/discord.mjs';
+import iZurvive from '../modules/izurvive.mjs';
 
 export const handler = async (event) => {
 
@@ -11,11 +12,19 @@ export const handler = async (event) => {
 	};
 
 	let nitrado = new Nitrado();
-	let players = await nitrado.players.list();
+	let nitrado_players_list = await nitrado.players.list();
+
+	let message = '**Player List**\\n';
+
+	for ( let player in nitrado_players_list )
+	{
+		message += player.gamertag + ' ' + iZurvive.config.api + iZurvive.config.location.base + player.position + '\\n';
+	}
+		//players = players.replace( /"/g, '\'' ).replace( /\n/g, '\\n' );
 
 	let discord = new Discord();
 	
-	if ( await discord.messages.send_server_players( players ) )
+	if ( await discord.messages.send_server_players_list( message ) )
 	{
 		response = {
 			statusCode: 200,
