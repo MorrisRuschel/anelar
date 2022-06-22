@@ -34,26 +34,27 @@ jobs:
       # TODO adicionar vinculo ao eventbridge
       # TODO criar um for para essas funções, colocando dentro de um array
       # TODO subir somente o controller da função
+      - name: Creating a package to AWS Lambda
+        run: |
+          zip -r $PROJECT.zip . -x ".git/*" ".github/*" "static/*" 
+
       - name: Deploy $NITRADO_PLAYERS_LIST to AWS Lambda
         run: |
-          zip -r $NITRADO_PLAYERS_LIST.zip . -x ".git/*" ".github/*" "static/*" 
-          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_LIST --zip-file=fileb://$NITRADO_PLAYERS_LIST.zip
+          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_LIST --zip-file=fileb://$PROJECT.zip
           aws lambda update-function-configuration --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_LIST \
             --handler=./api/$NITRADO_PLAYERS_LIST.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
 
       - name: Deploy $NITRADO_PLAYERS_ONLINE to AWS Lambda
         run: |
-          zip -r $NITRADO_PLAYERS_ONLINE.zip . -x ".git/*" ".github/*" "static/*"
-          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_ONLINE --zip-file=fileb://$NITRADO_PLAYERS_ONLINE.zip
+          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_ONLINE --zip-file=fileb://$PROJECT.zip
           aws lambda update-function-configuration --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_ONLINE \
             --handler=./api/$NITRADO_PLAYERS_ONLINE.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
 
       - name: Deploy $NITRADO_SERVER_STATUS to AWS Lambda
         run: |
-          zip -r $NITRADO_SERVER_STATUS.zip . -x ".git/*" ".github/*" "static/*"
-          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_SERVER_STATUS --zip-file=fileb://$NITRADO_SERVER_STATUS.zip
+          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_SERVER_STATUS --zip-file=fileb://$PROJECT.zip
           aws lambda update-function-configuration --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_SERVER_STATUS \
             --handler=./api/$NITRADO_SERVER_STATUS.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
