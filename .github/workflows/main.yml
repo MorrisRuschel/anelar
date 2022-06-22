@@ -9,7 +9,7 @@ env:
   PROJECT: 'anelar'
   ENVIRONMENT: 'prd'
   NITRADO_PLAYERS_LIST: 'nitrado-players-list'
-  LAMBDA_DISCORD: 'worker-discord'
+  NITRADO_PLAYERS_ONLINE: 'nitrado-players-online'
   NITRADO_SERVER_STATUS: 'nitrado-server-status'
 
 jobs:
@@ -31,6 +31,8 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # TODO remover zips após subi-los
+      # TODO adicionar vinculo ao eventbridge
+      # TODO criar um for para essas funções, colocando dentro de um array
       - name: Deploy $NITRADO_PLAYERS_LIST to AWS Lambda
         run: |
           zip -r $NITRADO_PLAYERS_LIST.zip . -x ".git/*" ".github/*" "static/*" 
@@ -39,12 +41,12 @@ jobs:
             --handler=./api/$NITRADO_PLAYERS_LIST.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
 
-      - name: Deploy $LAMBDA_DISCORD to AWS Lambda
+      - name: Deploy $NITRADO_PLAYERS_ONLINE to AWS Lambda
         run: |
-          zip -r $LAMBDA_DISCORD.zip . -x ".git/*" ".github/*" "static/*"
-          aws lambda update-function-code --function-name=$LAMBDA_DISCORD --zip-file=fileb://$LAMBDA_DISCORD.zip
-          aws lambda update-function-configuration --function-name=$LAMBDA_DISCORD \
-            --handler=./api/$LAMBDA_DISCORD.handler \
+          zip -r $NITRADO_PLAYERS_ONLINE.zip . -x ".git/*" ".github/*" "static/*"
+          aws lambda update-function-code --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_ONLINE --zip-file=fileb://$NITRADO_PLAYERS_ONLINE.zip
+          aws lambda update-function-configuration --function-name=$PROJECT-$ENVIRONMENT-$NITRADO_PLAYERS_ONLINE \
+            --handler=./api/$NITRADO_PLAYERS_ONLINE.handler \
             --environment Variables="{DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}, NITRADO_ACCOUNT_ID=${{ secrets.NITRADO_ACCOUNT_ID }}, NITRADO_ACCOUNT_TOKEN=${{ secrets.NITRADO_ACCOUNT_TOKEN }}, NITRADO_SERVER_ID=${{ secrets.NITRADO_SERVER_ID }}}"
 
       - name: Deploy $NITRADO_SERVER_STATUS to AWS Lambda
