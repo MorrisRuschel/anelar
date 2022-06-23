@@ -77,7 +77,7 @@ export default class Nitrado
 				}
 			};
 			
-			let response = await Request.post( url, '', options );
+			let response = await Request.post( url, null, options );
 				response = JSON.parse( response );
 
 			if ( response?.status == 'success' )
