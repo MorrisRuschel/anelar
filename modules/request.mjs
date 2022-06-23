@@ -53,13 +53,16 @@ export default class Request
 
 	static async post( url, content, headers )
 	{
+		let content_headers = ( content ? { 'Content-Type': 	'application/json',
+		'Content-Length':	Buffer.byteLength( content ) } : {} );
+
 		const options =
 		{
 			method: 	( headers?.method ? headers?.method : 'POST' ),
+
 			headers:
 			{
-				'Content-Type': 	'application/json',
-				'Content-Length':	Buffer.byteLength( content ),
+				...content_headers,
 				...headers
 			}
 		};
