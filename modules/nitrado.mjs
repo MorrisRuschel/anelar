@@ -60,7 +60,7 @@ export default class Nitrado
 				/*
 				needs a throw
 				*/
-				return 'The application cannot perform a restart server';
+				return 'The application cannot get server status';
 			}
 		},
 
@@ -81,6 +81,10 @@ export default class Nitrado
 			if ( response?.status && response?.message )
 			{
 				return response.message;
+			}
+			else
+			{
+				return 'The application cannot perform server restart';
 			}
 		},
 	}
