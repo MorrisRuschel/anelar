@@ -70,26 +70,17 @@ export default class Nitrado
 
 			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/restart';
 
-			let options = {
-				headers:
-				{
-					Authorization: process.env.NITRADO_ACCOUNT_TOKEN
-				}
+			let headers = 
+			{
+				Authorization: process.env.NITRADO_ACCOUNT_TOKEN
 			};
 			
-			let response = await Request.post( url, null, options );
-				response = JSON.parse( response );
+			let response = await Request.post( url, '', headers );
 
-			if ( response?.status == 'success' )
+			// TODO criar um throw
+			if ( response?.status && response?.message )
 			{
 				return response.message;
-			}
-			else
-			{
-				/*
-				needs a throw
-				*/
-				return 'The application cannot perform a restart server';
 			}
 		},
 	}
