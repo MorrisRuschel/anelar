@@ -36,14 +36,16 @@ export default class Nitrado
 
 		async status()
 		{
+			console.log( 'nitrado.server.status' );
 			let nitrado = new Nitrado();
 
 			let response = await nitrado.server.details();
 
 			if ( response?.status == 'success' )
 			{
+				// TODO criar um grupo de status
 				let status = [ 'started', 'restarting', 'stopping' ]; // stopped
-
+console.log('nitrado.server.status', status.indexOf( response?.data?.gameserver?.status ))
 				if ( status.indexOf( response?.data?.gameserver?.status ) == -1 )
 				{
 					return await this.restart();
@@ -64,6 +66,8 @@ export default class Nitrado
 
 		async restart()
 		{
+			console.log( 'nitrado.server.restart' );
+
 			let url = Nitrado.config.api + Nitrado.config.services.base + '/' + process.env.NITRADO_SERVER_ID + '/gameservers/restart';
 
 			let options = {
